@@ -1,0 +1,475 @@
+<!-- ДЕМО: сгенерировано фазой Render (frontend-design) на маленьких тестовых данных. Реальный отчёт богаче. -->
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Маркетинговая стратегия — ИИ-ассистент для юристов</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600;9..144,900&family=Spline+Sans+Mono:wght@400;500;600&family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;1,6..72,400&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --ink:#16130f;
+    --paper:#f4ede1;
+    --paper-2:#ece2d0;
+    --oxblood:#7a1f2b;
+    --oxblood-deep:#5c1620;
+    --gold:#b58a3e;
+    --gold-soft:#d9bd84;
+    --ink-soft:#4a4338;
+    --line:#cdbfa6;
+    --green:#2f5d4f;
+    --shadow:rgba(31,22,12,.16);
+    --serif:"Fraunces",Georgia,serif;
+    --read:"Newsreader",Georgia,serif;
+    --mono:"Spline Sans Mono",ui-monospace,monospace;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html{scroll-behavior:smooth}
+  body{
+    background:var(--paper);
+    color:var(--ink);
+    font-family:var(--read);
+    font-size:18px;
+    line-height:1.6;
+    -webkit-font-smoothing:antialiased;
+    overflow-x:hidden;
+    background-image:
+      radial-gradient(circle at 12% 18%, rgba(181,138,62,.10), transparent 42%),
+      radial-gradient(circle at 88% 8%, rgba(122,31,43,.08), transparent 38%),
+      url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='120'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='.035'/%3E%3C/svg%3E");
+  }
+  .wrap{max-width:1180px;margin:0 auto;padding:0 24px}
+  a{color:inherit}
+
+  /* ---------- HERO ---------- */
+  .hero{
+    position:relative;
+    padding:72px 0 60px;
+    border-bottom:2px solid var(--ink);
+    overflow:hidden;
+  }
+  .hero::before{
+    content:"";
+    position:absolute;inset:0;
+    background:
+      repeating-linear-gradient(90deg, transparent 0 38px, rgba(31,22,12,.025) 38px 39px);
+    pointer-events:none;
+  }
+  .masthead{
+    display:flex;justify-content:space-between;align-items:flex-end;
+    gap:20px;flex-wrap:wrap;
+    padding-bottom:14px;margin-bottom:30px;
+    border-bottom:1px solid var(--line);
+    font-family:var(--mono);
+    font-size:12px;letter-spacing:.18em;text-transform:uppercase;
+    color:var(--ink-soft);
+  }
+  .masthead .edition{color:var(--oxblood);font-weight:600}
+  .hero-grid{
+    display:grid;grid-template-columns:1.55fr .85fr;gap:48px;align-items:start;
+    position:relative;z-index:2;
+  }
+  .kicker{
+    font-family:var(--mono);
+    font-size:13px;letter-spacing:.34em;text-transform:uppercase;
+    color:var(--oxblood);
+    display:inline-flex;align-items:center;gap:12px;
+    margin-bottom:22px;
+  }
+  .kicker::before{content:"";width:42px;height:2px;background:var(--oxblood)}
+  h1.title{
+    font-family:var(--serif);
+    font-weight:900;
+    font-size:clamp(46px,7.4vw,108px);
+    line-height:.92;
+    letter-spacing:-.025em;
+    color:var(--ink);
+    margin-bottom:6px;
+  }
+  h1.title em{
+    font-style:italic;font-weight:500;
+    color:var(--oxblood);
+    font-variation-settings:"opsz" 140;
+  }
+  .subtitle{
+    font-family:var(--read);
+    font-style:italic;
+    font-size:clamp(20px,2.4vw,28px);
+    color:var(--ink-soft);
+    max-width:36ch;
+    margin-top:18px;
+    line-height:1.35;
+  }
+  .badges{display:flex;flex-wrap:wrap;gap:10px;margin-top:30px}
+  .badge{
+    font-family:var(--mono);
+    font-size:12px;letter-spacing:.12em;text-transform:uppercase;font-weight:500;
+    padding:9px 16px 8px;
+    border:1.5px solid var(--ink);
+    border-radius:2px;
+    background:var(--paper);
+    position:relative;
+    transition:transform .25s cubic-bezier(.2,.8,.2,1),background .25s,color .25s;
+    cursor:default;
+  }
+  .badge::before{content:"◆";color:var(--gold);margin-right:8px;font-size:9px;vertical-align:1px}
+  .badge:hover{background:var(--ink);color:var(--paper);transform:translateY(-3px) rotate(-1deg)}
+  .badge:hover::before{color:var(--gold-soft)}
+
+  .hero-aside{
+    border:2px solid var(--ink);
+    background:linear-gradient(160deg,var(--paper) 0%,var(--paper-2) 100%);
+    padding:26px 24px;
+    box-shadow:8px 8px 0 var(--ink);
+    position:relative;
+  }
+  .hero-aside h4{
+    font-family:var(--mono);font-size:11px;letter-spacing:.24em;text-transform:uppercase;
+    color:var(--oxblood);border-bottom:1px solid var(--line);padding-bottom:10px;margin-bottom:16px;
+  }
+  .aside-row{display:flex;justify-content:space-between;align-items:baseline;padding:9px 0;border-bottom:1px dotted var(--line)}
+  .aside-row:last-child{border-bottom:none}
+  .aside-row .k{font-family:var(--read);font-style:italic;font-size:16px;color:var(--ink-soft)}
+  .aside-row .v{font-family:var(--serif);font-weight:600;font-size:18px;color:var(--ink)}
+  .aside-row .v.big{font-size:30px;color:var(--oxblood);font-weight:900}
+
+  /* ---------- SECTION CHROME ---------- */
+  section{padding:78px 0;position:relative}
+  .sec-head{display:flex;align-items:baseline;gap:18px;margin-bottom:42px}
+  .sec-num{
+    font-family:var(--mono);font-size:13px;font-weight:600;letter-spacing:.1em;
+    color:var(--paper);background:var(--ink);
+    padding:6px 11px;border-radius:2px;flex-shrink:0;
+    transform:translateY(-6px);
+  }
+  .sec-title{
+    font-family:var(--serif);font-weight:600;
+    font-size:clamp(30px,4.4vw,52px);line-height:1;letter-spacing:-.02em;
+  }
+  .sec-title .accent{color:var(--oxblood);font-style:italic;font-weight:500}
+  .rule{height:2px;background:var(--ink);flex:1;align-self:center;margin-bottom:8px}
+
+  /* ---------- ONE-PAGER ---------- */
+  .op{background:var(--paper-2);border-top:2px solid var(--ink);border-bottom:2px solid var(--ink)}
+  .op-grid{display:grid;grid-template-columns:1fr 1.4fr;gap:40px;align-items:stretch}
+  .bigbet{
+    border:2px solid var(--oxblood);
+    background:var(--oxblood);
+    color:var(--paper);
+    padding:34px 30px;
+    position:relative;
+    box-shadow:8px 8px 0 var(--ink);
+    display:flex;flex-direction:column;justify-content:center;
+  }
+  .bigbet .lbl{font-family:var(--mono);font-size:11px;letter-spacing:.26em;text-transform:uppercase;color:var(--gold-soft);margin-bottom:16px}
+  .bigbet .stmt{font-family:var(--serif);font-weight:600;font-size:clamp(28px,3.8vw,46px);line-height:1.04;letter-spacing:-.02em}
+  .bigbet .stmt b{color:var(--gold-soft);font-weight:900;font-style:italic}
+  .bigbet .days{position:absolute;top:18px;right:22px;font-family:var(--mono);font-size:64px;font-weight:600;color:rgba(244,237,225,.14);line-height:1}
+
+  .top3{display:flex;flex-direction:column;gap:0}
+  .top3 .t3h{font-family:var(--mono);font-size:11px;letter-spacing:.26em;text-transform:uppercase;color:var(--oxblood);margin-bottom:14px}
+  .t3-item{
+    display:grid;grid-template-columns:auto 1fr auto;gap:22px;align-items:center;
+    padding:20px 4px;border-bottom:1px solid var(--line);
+    transition:padding-left .3s ease;
+  }
+  .t3-item:hover{padding-left:16px}
+  .t3-item:last-child{border-bottom:none}
+  .t3-n{font-family:var(--serif);font-weight:900;font-size:46px;line-height:.8;color:var(--gold);font-variation-settings:"opsz" 140}
+  .t3-label{font-family:var(--mono);font-size:10px;letter-spacing:.2em;text-transform:uppercase;color:var(--ink-soft)}
+  .t3-val{font-family:var(--serif);font-weight:600;font-size:clamp(22px,2.6vw,30px);color:var(--ink);line-height:1.1}
+  .t3-tag{font-family:var(--mono);font-size:11px;color:var(--oxblood);border:1px solid var(--oxblood);padding:4px 9px;border-radius:2px;white-space:nowrap}
+
+  /* ---------- STRATEGY ---------- */
+  .strat-block{
+    display:grid;grid-template-columns:auto 1fr;gap:34px;
+    padding:36px 0;border-top:1px solid var(--line);
+  }
+  .strat-block:first-of-type{border-top:none}
+  .strat-idx{
+    font-family:var(--serif);font-weight:900;font-size:clamp(56px,9vw,120px);line-height:.8;
+    color:transparent;-webkit-text-stroke:1.5px var(--gold);text-stroke:1.5px var(--gold);
+    font-variation-settings:"opsz" 140;
+  }
+  .strat-body h3{
+    font-family:var(--serif);font-weight:600;font-size:clamp(24px,3vw,34px);
+    letter-spacing:-.01em;margin-bottom:14px;
+  }
+  .strat-body p{max-width:60ch;color:var(--ink-soft);font-size:19px}
+  .strat-body p .hl{color:var(--ink);font-weight:600;background:linear-gradient(transparent 62%,var(--gold-soft) 62%);padding:0 2px}
+  .chan-list{list-style:none;display:flex;flex-wrap:wrap;gap:12px;margin-top:8px}
+  .chan-list li{
+    font-family:var(--read);font-style:italic;font-size:19px;
+    border-left:3px solid var(--oxblood);padding:6px 16px;background:var(--paper-2);
+  }
+  .mtbl{width:100%;border-collapse:collapse;margin-top:6px;max-width:480px}
+  .mtbl th,.mtbl td{text-align:left;padding:12px 16px;border:1px solid var(--ink)}
+  .mtbl th{font-family:var(--mono);font-size:11px;letter-spacing:.16em;text-transform:uppercase;background:var(--ink);color:var(--paper);font-weight:500}
+  .mtbl td{font-family:var(--read)}
+  .mtbl td:last-child{font-family:var(--serif);font-weight:900;font-size:24px;color:var(--oxblood);text-align:right}
+
+  /* ---------- TASKS / RICE ---------- */
+  .tasks{background:var(--ink);color:var(--paper);border-top:2px solid var(--gold)}
+  .tasks .sec-num{background:var(--gold);color:var(--ink)}
+  .tasks .sec-title{color:var(--paper)}
+  .tasks .sec-title .accent{color:var(--gold-soft)}
+  .tasks .rule{background:var(--gold)}
+  .rice-meta{font-family:var(--mono);font-size:12px;letter-spacing:.1em;color:var(--gold-soft);margin:-26px 0 30px;max-width:64ch}
+  .rice-table{width:100%;border-collapse:collapse;font-family:var(--read)}
+  .rice-table thead th{
+    font-family:var(--mono);font-size:11px;letter-spacing:.14em;text-transform:uppercase;
+    text-align:left;padding:14px 14px;border-bottom:2px solid var(--gold);color:var(--gold-soft);font-weight:500;
+  }
+  .rice-table thead th.num{text-align:right}
+  .rice-row{border-bottom:1px solid rgba(217,189,132,.22);transition:background .2s}
+  .rice-row:hover{background:rgba(217,189,132,.07)}
+  .rice-row td{padding:18px 14px;vertical-align:top}
+  .rank{font-family:var(--serif);font-weight:900;font-size:30px;color:rgba(244,237,225,.32);line-height:1;width:40px}
+  .t-title{font-family:var(--serif);font-weight:600;font-size:21px;color:var(--paper);letter-spacing:-.01em;line-height:1.15}
+  .t-dim{display:inline-block;font-family:var(--mono);font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:var(--ink);background:var(--gold-soft);padding:3px 8px;border-radius:2px;margin-top:8px}
+  .t-desc{font-size:16px;color:rgba(244,237,225,.7);font-style:italic;margin-top:8px;max-width:42ch}
+  .t-step{font-family:var(--mono);font-size:12px;color:var(--gold-soft);margin-top:8px;letter-spacing:.02em}
+  .t-step::before{content:"→ ";color:var(--gold)}
+  .rice-table td.num{text-align:right;font-family:var(--mono);font-size:15px;color:rgba(244,237,225,.82)}
+  .rice-score{position:relative;text-align:right}
+  .rice-score .sv{font-family:var(--serif);font-weight:900;font-size:34px;color:var(--gold-soft);line-height:1}
+  .rice-bar{height:5px;background:linear-gradient(90deg,var(--oxblood),var(--gold));margin-top:8px;border-radius:3px;transform-origin:right;animation:grow 1.1s cubic-bezier(.2,.8,.2,1) both}
+  @keyframes grow{from{transform:scaleX(0)}to{transform:scaleX(1)}}
+  .formula{font-family:var(--mono);font-size:11px;color:var(--gold-soft);text-align:center;margin-top:34px;letter-spacing:.08em;opacity:.7}
+
+  /* ---------- FOOTER ---------- */
+  footer{background:var(--paper-2);border-top:2px solid var(--ink);padding:56px 0 40px}
+  .foot-grid{display:flex;justify-content:space-between;align-items:flex-end;gap:30px;flex-wrap:wrap}
+  .foot-mark{font-family:var(--serif);font-weight:900;font-size:clamp(34px,5vw,60px);line-height:.9;letter-spacing:-.02em}
+  .foot-mark em{font-style:italic;font-weight:500;color:var(--oxblood)}
+  .foot-meta{font-family:var(--mono);font-size:12px;letter-spacing:.12em;text-transform:uppercase;color:var(--ink-soft);text-align:right;line-height:2}
+  .foot-meta .skills{color:var(--oxblood)}
+  .foot-rule{height:1px;background:var(--line);margin:28px 0 18px}
+
+  /* ---------- REVEAL ---------- */
+  .reveal{opacity:0;transform:translateY(26px);transition:opacity .7s ease,transform .7s cubic-bezier(.2,.8,.2,1)}
+  .reveal.in{opacity:1;transform:none}
+
+  /* ---------- RESPONSIVE ---------- */
+  @media(max-width:880px){
+    .hero-grid{grid-template-columns:1fr;gap:34px}
+    .op-grid{grid-template-columns:1fr}
+    .strat-block{grid-template-columns:1fr;gap:8px}
+    .strat-idx{font-size:64px}
+  }
+  @media(max-width:680px){
+    body{font-size:16px}
+    section{padding:54px 0}
+    .sec-head{flex-wrap:wrap;gap:12px}
+    .rule{display:none}
+    .t3-item{grid-template-columns:auto 1fr;gap:14px}
+    .t3-tag{grid-column:2;justify-self:start}
+    .rice-table thead{display:none}
+    .rice-row{display:block;padding:22px 0;border-bottom:1px solid rgba(217,189,132,.3)}
+    .rice-row td{display:block;padding:4px 0;text-align:left !important}
+    .rank{font-size:22px}
+    .rice-table td.num{text-align:left}
+    .rice-table td.num::before{content:attr(data-l);font-family:var(--mono);font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:var(--gold-soft);display:inline-block;width:120px}
+    .rice-score{text-align:left}
+    .rice-bar{max-width:160px}
+    .hero-aside{box-shadow:5px 5px 0 var(--ink)}
+    .bigbet,.bigbet .days{box-shadow:5px 5px 0 var(--ink)}
+  }
+</style>
+</head>
+<body>
+
+<!-- ============ HERO ============ -->
+<header class="hero">
+  <div class="wrap">
+    <div class="masthead">
+      <span class="edition">Маркетинговый дозор · Вып. 01</span>
+      <span>Демо-продукт · LegalTech</span>
+      <span>06 · 2026</span>
+    </div>
+    <div class="hero-grid">
+      <div>
+        <span class="kicker">Стратегический разбор</span>
+        <h1 class="title">ИИ-ассистент<br>для <em>юристов</em></h1>
+        <p class="subtitle">Черновики, которые раньше отнимали часы, теперь готовы за минуты. Стратегия выхода на нишу за один квартал.</p>
+        <div class="badges">
+          <span class="badge">AI-SEO</span>
+          <span class="badge">Pricing</span>
+          <span class="badge">Copywriting</span>
+        </div>
+      </div>
+      <aside class="hero-aside">
+        <h4>Сводка кампании</h4>
+        <div class="aside-row"><span class="k">Горизонт</span><span class="v big">90 дней</span></div>
+        <div class="aside-row"><span class="k">Сегмент</span><span class="v">Ниша X</span></div>
+        <div class="aside-row"><span class="k">Цель по лидам</span><span class="v">20 / мес</span></div>
+        <div class="aside-row"><span class="k">Задач в бэклоге</span><span class="v">2</span></div>
+        <div class="aside-row"><span class="k">Топ-RICE</span><span class="v">16.0</span></div>
+      </aside>
+    </div>
+  </div>
+</header>
+
+<!-- ============ ONE-PAGER ============ -->
+<section class="op reveal" id="onepager">
+  <div class="wrap">
+    <div class="sec-head">
+      <span class="sec-num">01</span>
+      <h2 class="sec-title">Одно<span class="accent">пейджер</span></h2>
+      <span class="rule"></span>
+    </div>
+    <div class="op-grid">
+      <div class="bigbet">
+        <span class="days">90d</span>
+        <span class="lbl">Большая ставка</span>
+        <p class="stmt">Закрыть <b>нишу X</b> за 90 дней.</p>
+      </div>
+      <div class="top3">
+        <span class="t3h">Топ-3 приоритета</span>
+        <div class="t3-item">
+          <span class="t3-n">1</span>
+          <div><span class="t3-label">Канал</span><div class="t3-val">Канал A</div></div>
+          <span class="t3-tag">привлечение</span>
+        </div>
+        <div class="t3-item">
+          <span class="t3-n">2</span>
+          <div><span class="t3-label">Оффер</span><div class="t3-val">Оффер B</div></div>
+          <span class="t3-tag">конверсия</span>
+        </div>
+        <div class="t3-item">
+          <span class="t3-n">3</span>
+          <div><span class="t3-label">Контент</span><div class="t3-val">Контент C</div></div>
+          <span class="t3-tag">удержание</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ STRATEGY ============ -->
+<section class="reveal" id="strategy">
+  <div class="wrap">
+    <div class="sec-head">
+      <span class="sec-num">02</span>
+      <h2 class="sec-title">Стра<span class="accent">тегия</span></h2>
+      <span class="rule"></span>
+    </div>
+
+    <div class="strat-block">
+      <span class="strat-idx">01</span>
+      <div class="strat-body">
+        <h3>Позиционирование</h3>
+        <p>Для юристов, кто <span class="hl">тонет в рутине</span> — ИИ-ассистент, который готовит черновики за минуты.</p>
+      </div>
+    </div>
+
+    <div class="strat-block">
+      <span class="strat-idx">02</span>
+      <div class="strat-body">
+        <h3>Каналы</h3>
+        <ul class="chan-list">
+          <li>Telegram-сообщества</li>
+          <li>Партнёрства с CRM</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="strat-block">
+      <span class="strat-idx">03</span>
+      <div class="strat-body">
+        <h3>Метрики</h3>
+        <table class="mtbl">
+          <thead><tr><th>Метрика</th><th>Цель</th></tr></thead>
+          <tbody><tr><td>Лиды / мес</td><td>20</td></tr></tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ TASKS / RICE ============ -->
+<section class="tasks reveal" id="tasks">
+  <div class="wrap">
+    <div class="sec-head">
+      <span class="sec-num">03</span>
+      <h2 class="sec-title">Задачи · <span class="accent">RICE</span></h2>
+      <span class="rule"></span>
+    </div>
+    <p class="rice-meta">Бэклог отсортирован по убыванию RICE-скора. Чем выше число, тем раньше задача попадает в работу.</p>
+    <table class="rice-table">
+      <thead>
+        <tr>
+          <th>#</th>
+          <th>Задача</th>
+          <th class="num">Reach</th>
+          <th class="num">Impact</th>
+          <th class="num">Conf.</th>
+          <th class="num">Effort</th>
+          <th class="num">RICE</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr class="rice-row">
+          <td class="rank">1</td>
+          <td>
+            <div class="t-title">Починить аналитику</div>
+            <span class="t-dim">Измерение</span>
+            <div class="t-desc">UTM в трекер</div>
+            <div class="t-step">добавить парсинг</div>
+          </td>
+          <td class="num" data-l="Reach">8</td>
+          <td class="num" data-l="Impact">2</td>
+          <td class="num" data-l="Confidence">1</td>
+          <td class="num" data-l="Effort">1</td>
+          <td class="rice-score" data-l="RICE">
+            <span class="sv">16.0</span>
+            <div class="rice-bar" style="width:100%"></div>
+          </td>
+        </tr>
+        <tr class="rice-row">
+          <td class="rank">2</td>
+          <td>
+            <div class="t-title">Лендинг оффера</div>
+            <span class="t-dim">Оффер</span>
+            <div class="t-desc">страница с ценой</div>
+            <div class="t-step">набросать hero</div>
+          </td>
+          <td class="num" data-l="Reach">6</td>
+          <td class="num" data-l="Impact">2</td>
+          <td class="num" data-l="Confidence">0.8</td>
+          <td class="num" data-l="Effort">3</td>
+          <td class="rice-score" data-l="RICE">
+            <span class="sv">3.2</span>
+            <div class="rice-bar" style="width:20%"></div>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+    <p class="formula">RICE = (Reach × Impact × Confidence) ÷ Effort</p>
+  </div>
+</section>
+
+<!-- ============ FOOTER ============ -->
+<footer>
+  <div class="wrap">
+    <div class="foot-grid">
+      <div class="foot-mark">ИИ-ассистент<br>для <em>юристов</em></div>
+      <div class="foot-meta">
+        <div>Демо · Маркетинговая стратегия</div>
+        <div class="skills">ai-seo · pricing · copywriting</div>
+        <div>Сформировано · 06.2026</div>
+      </div>
+    </div>
+    <div class="foot-rule"></div>
+    <div class="foot-meta" style="text-align:left">Маркетинговый дозор · сгенерировано рабочим процессом стратегии</div>
+  </div>
+</footer>
+
+<script>
+  const io=new IntersectionObserver((es)=>{es.forEach(e=>{if(e.isIntersecting){e.target.classList.add('in');io.unobserve(e.target)}})},{threshold:.12});
+  document.querySelectorAll('.reveal').forEach(el=>io.observe(el));
+</script>
+</body>
+</html>

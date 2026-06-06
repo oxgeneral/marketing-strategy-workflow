@@ -11,6 +11,7 @@ export const meta = {
     { title: 'Tasks', detail: 'разложить в задачи c RICE (навык product-manager-toolkit)' },
     { title: 'Verify', detail: 'проверка фактов + атомарности задач (параллельно)' },
     { title: 'Finalize', detail: 'финальная стратегия, исправленные задачи, однопейджер' },
+    { title: 'Render', detail: 'frontend-design → красивый самодостаточный HTML-отчёт' },
   ],
 }
 
@@ -249,11 +250,39 @@ var scoredTasks = scoreTasks(taskFix.tasks || [])
 var tasksMarkdown = renderTasksMarkdown(scoredTasks)
 var skillsLog = {}
 dimResults.forEach(function (r) { (r.skillsUsed || []).forEach(function (s) { skillsLog[s] = true }) })
-log('Готово: фактов ' + groundPacks.reduce(function (n, p) { return n + (p.facts || []).length }, 0) + ', сторон ' + dimResults.length + ', задач ' + scoredTasks.length + ', навыков задействовано ' + Object.keys(skillsLog).length + ', неподкреплённых утверждений ' + ((claims.unsupported || []).length) + '.')
+
+// ===================== Phase 9: Render (красивый HTML через frontend-design) =====================
+phase('Render')
+var reportHtml = await agent(
+  skillBlock(['frontend-design']) +
+  'Ты — продуктовый фронтенд-дизайнер. Собери ПОЛНЫЙ самодостаточный HTML-документ (один файл) — красивый отчёт по маркетинговой стратегии, применяя эстетику навыка frontend-design (выразительно, не generic-AI).\n' +
+  'ТРЕБОВАНИЯ:\n' +
+  '- Один файл <!DOCTYPE html> со встроенным <style> (без внешних CSS-файлов; шрифты Google Fonts допустимы).\n' +
+  '- JS по минимуму: плавный скролл и опциональное sticky-оглавление. Без вкладок и сортировок.\n' +
+  '- Markdown (однопейджер, стратегия) преобразуй в семантический HTML САМ (заголовки, списки, таблицы, code).\n' +
+  '- Секции по порядку: 1) Hero — название объекта + бейджи задействованных навыков; 2) Executive-однопейджер; 3) Стратегия (полностью); 4) Задачи — HTML-таблица RICE, отсортирована по убыванию rice, визуальный акцент на топ-приоритеты; 5) Red-team (контр-кейс + рискованные допущения); 6) Fact-check (вердикт + число правок); 7) Footer.\n' +
+  '- Адаптивно (мобайл/десктоп), аккуратная типографика, воздух, карточки для метрик и задач, доступные контрасты.\n' +
+  '- Выведи ТОЛЬКО HTML-код, без обрамляющего markdown-блока и без текста до/после.\n\n' +
+  'ДАННЫЕ ДЛЯ ОТЧЁТА:\n' +
+  'ОБЪЕКТ: ' + (brief.subject || 'Маркетинговая стратегия') + '\n' +
+  'ЗАДЕЙСТВОВАННЫЕ НАВЫКИ: ' + (Object.keys(skillsLog).join(', ') || '—') + '\n\n' +
+  '=== ОДНОПЕЙДЖЕР (markdown) ===\n' + onePager + '\n\n' +
+  '=== СТРАТЕГИЯ (markdown) ===\n' + finalStrategy + '\n\n' +
+  '=== ЗАДАЧИ (JSON, с полем rice, отсортированы) ===\n' + JSON.stringify(scoredTasks) + '\n\n' +
+  '=== RED-TEAM ===\nКонтр-кейс: ' + (redteam.strongestCounterCase || '—') + '\nРискованные допущения: ' + (redteam.riskiestAssumptions || []).join('; ') + '\n\n' +
+  '=== FACT-CHECK ===\nВердикт: ' + (claims.verdict || '—') + '\nЧисло правок: ' + ((claims.unsupported || []).length),
+  { label: 'render:html', phase: 'Render' }
+)
+if (typeof reportHtml === 'string') {
+  reportHtml = reportHtml.replace(/^\s*```(?:html)?\s*/i, '').replace(/\s*```\s*$/, '').trim()
+}
+
+log('Готово: фактов ' + groundPacks.reduce(function (n, p) { return n + (p.facts || []).length }, 0) + ', сторон ' + dimResults.length + ', задач ' + scoredTasks.length + ', навыков ' + Object.keys(skillsLog).length + ', правок fact-check ' + ((claims.unsupported || []).length) + ', HTML ' + (reportHtml ? reportHtml.length + ' симв.' : 'нет') + '.')
 
 return {
   onePager: onePager,
   strategyMarkdown: finalStrategy,
+  reportHtml: reportHtml,
   tasks: scoredTasks,
   tasksMarkdown: tasksMarkdown,
   sharpenedBrief: sharpened,

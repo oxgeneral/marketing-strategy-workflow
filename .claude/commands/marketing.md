@@ -19,10 +19,13 @@ argument-hint: [1-2 фразы — что продвигаем и главная
 Workflow тяжёлый (~19 агентов, 15–25 мин, >1M токенов) — он уходит в фон. НЕ опрашивай статус вручную; дождись уведомления о завершении и продолжай автоматически.
 
 ## Шаг 3 — сохранить результат
-Из output-файла возьми `result` (поля: `onePager`, `strategyMarkdown`, `tasks`, `tasksMarkdown`, `redteam`, `claimsCheck`, `evidence`, `dimensions`). Распарси JSON через Bash+python (результат большой). Сохрани в папку `marketing/` (она git-ignored) с понятным `<slug>` объекта и текущим `<YYYY-MM>`:
+Из output-файла возьми `result` (поля: `onePager`, `strategyMarkdown`, `reportHtml`, `tasks`, `tasksMarkdown`, `redteam`, `claimsCheck`, `evidence`, `skillsUsed`, `dimensions`). Распарси JSON через Bash+python (результат большой). Сохрани в папку `marketing/` (она git-ignored) с понятным `<slug>` объекта и текущим `<YYYY-MM>`:
+- `marketing/report-<slug>-<YYYY-MM>.html` — `reportHtml` (готовый красивый HTML-отчёт от frontend-design; **основной артефакт** — открывается в браузере)
 - `marketing/onepager-<slug>-<YYYY-MM>.md` — `onePager`
 - `marketing/strategy-<slug>-<YYYY-MM>.md` — `strategyMarkdown` + приложения (red-team, fact-check, Evidence Pack, 9 сторон)
 - `marketing/tasks-<slug>-<YYYY-MM>.md` — `tasksMarkdown` (RICE уже посчитан внутри workflow)
+
+Запиши `reportHtml` в `.html` как есть (не оборачивай и не экранируй).
 
 Проверь `git check-ignore`, что файлы не попадут в гит.
 
