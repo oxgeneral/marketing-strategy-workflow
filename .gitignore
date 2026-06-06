@@ -1,0 +1,15 @@
+# OS
+.DS_Store
+
+# Editor
+.vscode/
+.idea/
+
+# Node (если кто-то добавит инструменты)
+node_modules/
+*.log
+
+# Локальные выводы стратегий — НЕ публиковать
+marketing/
+output/
+*.local.md
