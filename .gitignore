@@ -5,11 +5,11 @@
 .vscode/
 .idea/
 
-# Node (если кто-то добавит инструменты)
+# Node (if someone adds tooling)
 node_modules/
 *.log
 
-# Локальные выводы стратегий — НЕ публиковать
+# Local strategy outputs — do NOT publish
 marketing/
 output/
 *.local.md

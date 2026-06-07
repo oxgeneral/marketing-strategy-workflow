@@ -1,27 +1,27 @@
 export const meta = {
   name: 'marketing-strategy',
-  description: 'Маркетинговая стратегия + RICE-бэклог на РЕАЛЬНЫХ навыках (Skill). Каждая сторона загружает свой навык (Skill → fallback на чтение SKILL.md → встроенная методология). Веер по ~9 сторонам на едином пакете фактов (Ground) → red-team → синтез → задачи → двойная верификация → финал + executive-однопейджер. Бриф через args (фраза | JSON-строка | объект).',
-  whenToUse: 'Когда нужна целостная маркетинговая стратегия и конкретный бэклог задач. Бриф через args: одной фразой или {subject, goals, audience, positioning, constraints, context, docs?:[пути], urls?:[ссылки]}. Использует навыки coreyhaines marketing-skills, ajtbd, marketing-psychology, product-manager-toolkit, design:* — с graceful fallback, если их нет. Возвращает данные; вызывающий сохраняет в файлы.',
+  description: 'Marketing strategy + RICE backlog on REAL skills (Skill). Each dimension loads its own skill (Skill → fallback to reading SKILL.md → built-in methodology). Fan-out across ~9 dimensions on a shared fact pack (Ground) → red-team → synthesis → tasks → double verification → final + executive one-pager. Brief via args (sentence | JSON string | object).',
+  whenToUse: 'When you need a coherent marketing strategy and a concrete task backlog. Brief via args: a single sentence or {subject, goals, audience, positioning, constraints, context, docs?:[paths], urls?:[links]}. Uses the coreyhaines marketing-skills, ajtbd, marketing-psychology, product-manager-toolkit, design:* skills — with graceful fallback if absent. Returns data; the caller saves it to files.',
   phases: [
-    { title: 'Frame', detail: 'распарсить бриф, заострить, зафиксировать допущения' },
-    { title: 'Ground', detail: 'детерминированно собрать проверяемые факты (репо/файлы/веб)' },
-    { title: 'Dimensions', detail: '~9 сторон, каждая на своём РЕАЛЬНОМ навыке' },
-    { title: 'Red-team', detail: 'оспорить складывающийся консенсус' },
-    { title: 'Synthesize', detail: 'собрать стратегию, отвечающую на возражения red-team' },
-    { title: 'Tasks', detail: 'разложить в задачи c RICE (навык product-manager-toolkit)' },
-    { title: 'Verify', detail: 'проверка фактов + атомарности задач (параллельно)' },
-    { title: 'Finalize', detail: 'финальная стратегия (учёт fact-check)' },
-    { title: 'Edit', detail: 'редактура: copy-editing → связный читаемый нарратив + однопейджер' },
-    { title: 'Render', detail: 'frontend-design → дашборд-отчёт с графиками' },
+    { title: 'Frame', detail: 'parse the brief, sharpen it, record assumptions' },
+    { title: 'Ground', detail: 'deterministically collect verifiable facts (repo/files/web)' },
+    { title: 'Dimensions', detail: '~9 dimensions, each on its own REAL skill' },
+    { title: 'Red-team', detail: 'challenge the forming consensus' },
+    { title: 'Synthesize', detail: 'assemble a strategy that answers the red-team' },
+    { title: 'Tasks', detail: 'break down into RICE tasks (product-manager-toolkit skill)' },
+    { title: 'Verify', detail: 'fact-check + task atomicity (in parallel)' },
+    { title: 'Finalize', detail: 'final strategy (incorporating fact-check)' },
+    { title: 'Edit', detail: 'copy-editing → coherent readable narrative + one-pager' },
+    { title: 'Render', detail: 'frontend-design → dashboard report with charts' },
   ],
 }
 
-// ===================== СХЕМЫ =====================
+// ===================== SCHEMAS =====================
 const EVIDENCE_SCHEMA = {
   type: 'object', additionalProperties: false,
   properties: {
     facts: { type: 'array', items: { type: 'object', additionalProperties: false,
-      properties: { claim: { type: 'string' }, source: { type: 'string', description: 'файл:строка или URL' }, confidence: { type: 'string', enum: ['high', 'medium', 'low'] } },
+      properties: { claim: { type: 'string' }, source: { type: 'string', description: 'file:line or URL' }, confidence: { type: 'string', enum: ['high', 'medium', 'low'] } },
       required: ['claim', 'source', 'confidence'] } },
     openQuestions: { type: 'array', items: { type: 'string' } },
   },
@@ -31,7 +31,7 @@ const DIMENSION_SCHEMA = {
   type: 'object', additionalProperties: false,
   properties: {
     dimension: { type: 'string' },
-    skillsUsed: { type: 'array', items: { type: 'string' }, description: 'какие навыки реально загрузил (Skill или Read) и каким способом' },
+    skillsUsed: { type: 'array', items: { type: 'string' }, description: 'which skills you actually loaded (Skill or Read) and how' },
     theoryBasis: { type: 'string' },
     keyInsights: { type: 'array', items: { type: 'string' } },
     recommendations: { type: 'array', items: { type: 'string' } },
@@ -64,22 +64,22 @@ const CLAIMS_SCHEMA = {
   required: ['verdict'],
 }
 
-// ===================== ХЕЛПЕРЫ =====================
-// Гибридная загрузка реального навыка: Skill → find+Read SKILL.md → fallback на методологию задачи.
+// ===================== HELPERS =====================
+// Hybrid loading of a real skill: Skill → find+Read SKILL.md → fallback to the task's methodology.
 function skillBlock(names) {
-  return '### ШАГ 0 — загрузи РЕАЛЬНУЮ методологию навыков (ОБЯЗАТЕЛЬНО до анализа)\n' +
-    'Навыки: [' + names.join(', ') + ']. Для КАЖДОГО по порядку, пока не загрузишь инструкции:\n' +
-    '1) Вызови инструмент **Skill** с этим именем (для навыков пакета marketing-skills попробуй также префикс "marketing-skills:<имя>").\n' +
-    '2) Если ответ "Unknown skill" — навык установлен, но не зарегистрирован в этой сессии. Найди его файл через Bash: `find ~/.claude/plugins/cache ~/.claude/skills -ipath "*<короткое-имя>/SKILL.md" 2>/dev/null | head -1` (короткое имя — часть после ":"), прочитай через **Read** и применяй инструкции навыка.\n' +
-    '3) Если файл не найден — опирайся на методологию, описанную в ЗАДАЧЕ ниже.\n' +
-    'В анализе ЯВНО применяй загруженную методологию навыка (не игнорируй её) и перечисли в поле skillsUsed, что и каким способом загрузил.\n\n'
+  return '### STEP 0 — load the REAL methodology of the skills (REQUIRED before analysis)\n' +
+    'Skills: [' + names.join(', ') + ']. For EACH one, in order, until you load its instructions:\n' +
+    '1) Call the **Skill** tool with that name (for marketing-skills package skills, also try the prefix "marketing-skills:<name>").\n' +
+    '2) If the answer is "Unknown skill" — the skill is installed but not registered in this session. Find its file via Bash: `find ~/.claude/plugins/cache ~/.claude/skills -ipath "*<short-name>/SKILL.md" 2>/dev/null | head -1` (short-name is the part after ":"), read it via **Read**, and apply the skill\'s instructions.\n' +
+    '3) If the file is not found — rely on the methodology described in the TASK below.\n' +
+    'In your analysis, EXPLICITLY apply the loaded skill methodology (do not ignore it) and list in the skillsUsed field what you loaded and how.\n\n'
 }
 function bullets(items) { items = items || []; return items.length ? items.map(function (x) { return '- ' + x }).join('\n') : '—' }
 function evidenceDigest(packs) {
   return packs.map(function (p, i) {
     var facts = (p.facts || []).map(function (f) { return '- [' + f.confidence + '] ' + f.claim + ' _(' + f.source + ')_' }).join('\n')
-    var oq = (p.openQuestions || []).length ? '\nОткрытые вопросы:\n' + bullets(p.openQuestions) : ''
-    return '#### Источник ' + (i + 1) + '\n' + (facts || '—') + oq
+    var oq = (p.openQuestions || []).length ? '\nOpen questions:\n' + bullets(p.openQuestions) : ''
+    return '#### Source ' + (i + 1) + '\n' + (facts || '—') + oq
   }).join('\n\n')
 }
 function scoreTasks(tasks) {
@@ -91,15 +91,15 @@ function scoreTasks(tasks) {
 }
 function renderTasksMarkdown(tasks) {
   var cell = function (s) { return String(s == null ? '' : s).replace(/\|/g, '/').replace(/\n/g, ' ').trim() }
-  var head = '| # | Задача | Сторона | RICE | R | I | C | E (дн) |\n|---|---|---|---|---|---|---|---|'
+  var head = '| # | Task | Dimension | RICE | R | I | C | E (days) |\n|---|---|---|---|---|---|---|---|'
   var rows = tasks.map(function (t, i) { return '| ' + (i + 1) + ' | ' + cell(t.title) + ' | ' + cell(t.dimension) + ' | **' + t.rice + '** | ' + cell(t.reach) + ' | ' + cell(t.impact) + ' | ' + cell(t.confidence) + ' | ' + cell(t.effort) + ' |' })
   var detail = tasks.map(function (t, i) {
-    return '### ' + (i + 1) + '. ' + t.title + '  ·  RICE ' + t.rice + '\n**Сторона:** ' + t.dimension + '  ·  R=' + t.reach + ' · I=' + t.impact + ' · C=' + t.confidence + ' · E=' + t.effort + ' дн\n\n' + (t.description || '') + (t.firstStep ? '\n\n▶️ **Первый шаг:** ' + t.firstStep : '')
+    return '### ' + (i + 1) + '. ' + t.title + '  ·  RICE ' + t.rice + '\n**Dimension:** ' + t.dimension + '  ·  R=' + t.reach + ' · I=' + t.impact + ' · C=' + t.confidence + ' · E=' + t.effort + ' d\n\n' + (t.description || '') + (t.firstStep ? '\n\n▶️ **First step:** ' + t.firstStep : '')
   }).join('\n\n')
-  return [head].concat(rows).join('\n') + '\n\n---\n\n## Детализация (в порядке приоритета)\n\n' + detail
+  return [head].concat(rows).join('\n') + '\n\n---\n\n## Detail (in priority order)\n\n' + detail
 }
 
-// ===================== БРИФ (robust args: фраза | JSON-строка | объект) =====================
+// ===================== BRIEF (robust args: sentence | JSON string | object) =====================
 var brief = {}
 if (typeof args === 'string') {
   var s = args.trim()
@@ -108,26 +108,26 @@ if (typeof args === 'string') {
 } else if (args && typeof args === 'object') { brief = args }
 var hasBrief = Object.keys(brief).length > 0
 var oneLiner = hasBrief && !brief.goals && !brief.audience && !brief.positioning && !brief.context
-if (!hasBrief) log('⚠️ Бриф (args) пуст. Соберу контекст на фазе Ground и ЯВНО зафиксирую допущения — результат будет реконструкцией.')
-else if (oneLiner) log('ℹ️ Краткая постановка — Frame развернёт её в полный бриф, Ground подтвердит фактами.')
+if (!hasBrief) log('⚠️ Brief (args) is empty. I will gather context in the Ground phase and record assumptions EXPLICITLY — the result will be a reconstruction.')
+else if (oneLiner) log('ℹ️ Short brief — Frame will expand it into a full brief, Ground will confirm with facts.')
 
 var briefText = [
-  brief.subject ? 'ОБЪЕКТ: ' + brief.subject : '',
-  brief.goals ? 'ЦЕЛИ: ' + brief.goals : '',
-  brief.audience ? 'АУДИТОРИЯ: ' + brief.audience : '',
-  brief.positioning ? 'ТЕКУЩЕЕ ПОЗИЦИОНИРОВАНИЕ: ' + brief.positioning : '',
-  brief.constraints ? 'ОГРАНИЧЕНИЯ: ' + brief.constraints : '',
-  brief.context ? 'КОНТЕКСТ: ' + brief.context : '',
-  (brief.docs && brief.docs.length) ? 'ДОКИ ДЛЯ ИЗУЧЕНИЯ: ' + brief.docs.join(', ') : '',
-  (brief.urls && brief.urls.length) ? 'ССЫЛКИ: ' + brief.urls.join(', ') : '',
+  brief.subject ? 'SUBJECT: ' + brief.subject : '',
+  brief.goals ? 'GOALS: ' + brief.goals : '',
+  brief.audience ? 'AUDIENCE: ' + brief.audience : '',
+  brief.positioning ? 'CURRENT POSITIONING: ' + brief.positioning : '',
+  brief.constraints ? 'CONSTRAINTS: ' + brief.constraints : '',
+  brief.context ? 'CONTEXT: ' + brief.context : '',
+  (brief.docs && brief.docs.length) ? 'DOCS TO STUDY: ' + brief.docs.join(', ') : '',
+  (brief.urls && brief.urls.length) ? 'LINKS: ' + brief.urls.join(', ') : '',
 ].filter(Boolean).join('\n')
-var baseBrief = briefText || 'Бриф через args не передан. Восстанови объект из материалов рабочей директории на фазе Ground и ЯВНО фиксируй каждое допущение.'
+var baseBrief = briefText || 'No brief was passed via args. Reconstruct the subject from the working-directory materials in the Ground phase and record EACH assumption explicitly.'
 
 // ===================== Phase 1: Frame =====================
 phase('Frame')
 var sharpened = await agent(
-  'Ты — head of marketing strategy. Сырой бриф:\n\n' + baseBrief + '\n\n' +
-  'Заостри в рабочий бриф (<=250 слов): 1) что именно продаём и кому; 2) ОДНА главная бизнес-цель + 1-2 вторичные; 3) ключевые допущения (явно, списком); 4) north-star метрика. Если передана лишь краткая фраза — разверни её, выводя аудиторию/цели/позиционирование как ЯВНЫЕ гипотезы (помечай «гипотеза»). Плотно, по-русски, без воды. Если данных мало — НЕ выдумывай, перечисли, что уточнить на Ground.',
+  'You are a head of marketing strategy. Raw brief:\n\n' + baseBrief + '\n\n' +
+  'Sharpen it into a working brief (<=250 words): 1) what exactly we sell and to whom; 2) ONE primary business goal + 1-2 secondary; 3) key assumptions (explicit, as a list); 4) the north-star metric. If only a short sentence was passed — expand it, deriving audience/goals/positioning as EXPLICIT hypotheses (label "hypothesis"). Dense, in English, no fluff. If data is thin — do NOT invent; list what to clarify in Ground.',
   { label: 'frame:brief', phase: 'Frame' }
 )
 
@@ -136,40 +136,40 @@ phase('Ground')
 var groundPacks = (await parallel([
   function () {
     return agent(
-      'Ты — research analyst. Заострённый бриф:\n\n' + sharpened + '\n\n' +
-      'Собери ПРОВЕРЯЕМЫЕ факты об объекте: Read/Grep/Glob по рабочей директории (доки, код сайта, аналитика), WebFetch для путей/ссылок из брифа. Для КАЖДОГО факта — источник (файл:строка или URL) и confidence. НЕ выдумывай — чего нет, в openQuestions. Ищи: оффер/цены, метрики/аналитику, позиционирование, активы (кейсы), тех-факты (sitemap, schema, события трекинга).',
+      'You are a research analyst. Sharpened brief:\n\n' + sharpened + '\n\n' +
+      'Collect VERIFIABLE facts about the subject: Read/Grep/Glob over the working directory (docs, site code, analytics), WebFetch for paths/links from the brief. For EACH fact — a source (file:line or URL) and confidence. Do NOT invent — whatever is missing goes to openQuestions. Look for: offer/pricing, metrics/analytics, positioning, assets (case studies), technical facts (sitemap, schema, tracking events).',
       { label: 'ground:internal', phase: 'Ground', schema: EVIDENCE_SCHEMA }
     )
   },
   function () {
     return agent(
-      'Ты — market research analyst. Заострённый бриф:\n\n' + sharpened + '\n\n' +
-      'Через WebSearch/WebFetch собери ВНЕШНИЙ контекст с источниками (URL): категория и динамика, 3-5 прямых конкурентов, их офферы/цены если публичны, типичные каналы для этой ЦА, бенчмарки. Для каждого факта — URL и confidence. Если объект непубличный — фокус на категории/рынке. Не выдумывай цифры.',
+      'You are a market research analyst. Sharpened brief:\n\n' + sharpened + '\n\n' +
+      'Via WebSearch/WebFetch collect EXTERNAL context with sources (URL): the category and its dynamics, 3-5 direct competitors, their offers/pricing if public, typical channels for this audience, benchmarks. For each fact — a URL and confidence. If the subject is non-public — focus on the category/market. Do not invent numbers.',
       { label: 'ground:market', phase: 'Ground', schema: EVIDENCE_SCHEMA }
     )
   },
   function () {
     return agent(
-      'Ты — pricing research analyst. Заострённый бриф:\n\n' + sharpened + '\n\n' +
-      'Через WebSearch/WebFetch проведи ГЛУБОКИЙ ценовой интернет-ресерч с источниками (URL). Найди КОНКРЕТНЫЕ цифры: 1) реальные цены/ставки прямых конкурентов и сопоставимых услуг (если публичны); 2) рыночные ставки для этой роли/услуги с учётом гео (напр. ставки AI PM / fractional CTO / профильного консалтинга — дневные, проектные, ретейнер); 3) бенчмарки willingness-to-pay и типичные модели монетизации (фикс / ретейнер / % от результата); 4) ценовые якоря для EVE (стоимость найма штатного специалиста, средний чек агентств). Для КАЖДОЙ цифры — URL и confidence; чего не нашёл — в openQuestions. НЕ выдумывай цифры — лучше пометить low confidence или вынести в openQuestions.',
+      'You are a pricing research analyst. Sharpened brief:\n\n' + sharpened + '\n\n' +
+      'Via WebSearch/WebFetch run DEEP pricing research with sources (URL). Find CONCRETE numbers: 1) real prices/rates of direct competitors and comparable services (if public); 2) market rates for this role/service by geography (e.g. AI PM / fractional CTO / specialist consulting rates — daily, project, retainer); 3) willingness-to-pay benchmarks and typical monetization models (fixed / retainer / % of outcome); 4) pricing anchors for EVE (cost of an in-house hire, average agency invoice). For EACH number — a URL and confidence; whatever you could not find goes to openQuestions. Do NOT invent numbers — better to mark low confidence or move to openQuestions.',
       { label: 'ground:pricing', phase: 'Ground', schema: EVIDENCE_SCHEMA }
     )
   },
 ])).filter(Boolean)
 var evidence = evidenceDigest(groundPacks)
-log('Ground: собрано ' + groundPacks.reduce(function (n, p) { return n + (p.facts || []).length }, 0) + ' фактов с источниками.')
+log('Ground: collected ' + groundPacks.reduce(function (n, p) { return n + (p.facts || []).length }, 0) + ' facts with sources.')
 
-// ===================== Phase 3: Dimensions (каждая на своём навыке) =====================
+// ===================== Phase 3: Dimensions (each on its own skill) =====================
 var DIMENSIONS = [
-  { key: 'positioning', title: 'Позиционирование и JTBD', skills: ['ajtbd:ajtbd', 'competitors'], lens: 'Позиционирование по April Dunford (competitive alternatives → unique attributes → value → кому важнее) + JTBD: функциональная/эмоциональная/социальная работа, силы прогресса, trigger events. 2-3 варианта позиционирующего утверждения, основная "работа", против чего конкурируем.' },
-  { key: 'audience', title: 'Аудитория и сегментация', skills: ['customer-research', 'ajtbd:ajtbd'], lens: 'ICP и сегментация по работам: кто, в какой ситуации, с каким триггером ищет решение. 2-3 сегмента с болями (unprompted), где их искать. Какой в фокус и почему (PMF).' },
-  { key: 'offer', title: 'Оффер и ценность/цена', skills: ['pricing'], lens: 'Оффер и монетизация: value-based, Van Westendorp/WTP, good-better-best, packaging. Ядро ценностного предложения, варианты упаковки, обоснование цены через ценность. Сверь с себестоимостью/юнит-экономикой И с РЫНОЧНЫМИ ЦЕНАМИ из Evidence Pack (раздел ценового ресерча — реальные ставки конкурентов и рынка с URL). ОБЯЗАТЕЛЬНО привяжи рекомендуемую цену к найденным рыночным якорям (стоимость найма, чек агентств) с конкретными цифрами. Если ценовых данных в Evidence Pack мало — сам проведи WebSearch/WebFetch по ценам конкурентов и рыночным ставкам и приведи цифры с URL. Любую цену без источника помечай как гипотезу.' },
-  { key: 'messaging', title: 'Сообщения и копирайтинг', skills: ['copywriting', 'marketing-psychology', 'design:ux-copy'], lens: 'Месседжинг: главный value prop, 3-5 messaging pillars, обработка возражений. Direct-response + поведенческая психология (social proof, anchoring, loss aversion, authority) — этично. Примеры заголовков/буллетов.' },
-  { key: 'seo_geo', title: 'SEO и GEO (AI-поиск)', skills: ['ai-seo', 'seo-audit', 'schema'], lens: 'SEO + GEO. Учти Ahrefs 2026 (если в Evidence Pack): листиклы Best X = 43.8% цитат ChatGPT; 67% — неинфлюенсируемые; YouTube — макс. корреляция (0.737); schema НЕ влияет на AI-цитаты (но полезна для Google KG); AIO режут клики по #1 на -58%; 99.9% AIO на инфо-запросах. Топиковые кластеры, как попасть в чужие Best X, роль YouTube, что НЕ переинвестировать.' },
-  { key: 'content', title: 'Контент-стратегия', skills: ['content-strategy'], lens: 'Контент: topical authority, форматы под этап воронки, 4-6 опорных тем, ритм. Привязка к инфо-интенту и к форматам, которые цитирует AI. Контент-pillars + флагманские материалы.' },
-  { key: 'channels', title: 'Каналы и дистрибуция', skills: ['marketing-plan', 'community-marketing'], lens: 'Каналы: owned/earned/paid + комьюнити. Где реально ICP (сверь с Evidence Pack). Приоритизируй 2-3 канала под ограничения, обоснуй, отсеки неокупаемое. Для каждого — механика.' },
-  { key: 'growth', title: 'Growth-петли и удержание', skills: ['referrals', 'free-tools', 'lead-magnets'], lens: 'Growth engineering: реферальные/виральные петли, free tools, lead magnets, комьюнити как петля. 1-2 реалистичные петли под ресурс и что измерять.' },
-  { key: 'brand_measure', title: 'Brand voice и измерение', skills: ['analytics', 'ab-testing'], lens: 'Голос бренда (tone) + измерение: north-star, 3-5 KPI по воронке, план A/B рискованных гипотез (с учётом реального объёма трафика из Evidence Pack). Tone-правила + дерево метрик.' },
+  { key: 'positioning', title: 'Positioning & JTBD', skills: ['ajtbd:ajtbd', 'competitors'], lens: 'Positioning per April Dunford (competitive alternatives → unique attributes → value → who cares most) + JTBD: functional/emotional/social job, forces of progress, trigger events. 2-3 positioning-statement options, the core "job", what we compete against.' },
+  { key: 'audience', title: 'Audience & segmentation', skills: ['customer-research', 'ajtbd:ajtbd'], lens: 'ICP and segmentation by jobs: who, in what situation, with what trigger seeks a solution. 2-3 segments with pains (unprompted), where to find them. Which to focus on and why (PMF).' },
+  { key: 'offer', title: 'Offer & value/price', skills: ['pricing'], lens: 'Offer and monetization: value-based, Van Westendorp/WTP, good-better-best, packaging. Core value proposition, packaging options, justify price through value. Cross-check with cost/unit-economics AND with the MARKET PRICES from the Evidence Pack (the pricing-research section — real competitor and market rates with URLs). You MUST anchor the recommended price to the found market anchors (cost of hiring, agency invoice) with concrete numbers. If pricing data in the Evidence Pack is thin — run WebSearch/WebFetch on competitor prices and market rates yourself and cite numbers with URLs. Mark any price without a source as a hypothesis.' },
+  { key: 'messaging', title: 'Messaging & copywriting', skills: ['copywriting', 'marketing-psychology', 'design:ux-copy'], lens: 'Messaging: main value prop, 3-5 messaging pillars, objection handling. Direct-response + behavioral psychology (social proof, anchoring, loss aversion, authority) — ethically. Example headlines/bullets.' },
+  { key: 'seo_geo', title: 'SEO & GEO (AI search)', skills: ['ai-seo', 'seo-audit', 'schema'], lens: 'SEO + GEO. Consider Ahrefs 2026 (if in the Evidence Pack): "Best X" listicles = 43.8% of ChatGPT citations; 67% from non-influenceable sources; YouTube — highest correlation (0.737); schema does NOT affect AI citations (but is useful for the Google Knowledge Graph); AI Overviews cut clicks to #1 by 58%; 99.9% of AIOs on informational queries. Topic clusters, how to get into others\' "Best X" lists, the role of YouTube, what NOT to over-invest in.' },
+  { key: 'content', title: 'Content strategy', skills: ['content-strategy'], lens: 'Content: topical authority, formats by funnel stage, 4-6 pillar topics, cadence. Tie to informational intent and to formats AI cites. Content pillars + flagship pieces.' },
+  { key: 'channels', title: 'Channels & distribution', skills: ['marketing-plan', 'community-marketing'], lens: 'Channels: owned/earned/paid + community. Where the ICP actually is (cross-check with the Evidence Pack). Prioritize 2-3 channels for the constraints, justify, cut what won\'t pay off. For each — the mechanics.' },
+  { key: 'growth', title: 'Growth loops & retention', skills: ['referrals', 'free-tools', 'lead-magnets'], lens: 'Growth engineering: referral/viral loops, free tools, lead magnets, community as a loop. 1-2 realistic loops for the resources and what to measure.' },
+  { key: 'brand_measure', title: 'Brand voice & measurement', skills: ['analytics', 'ab-testing'], lens: 'Brand voice (tone) + measurement: north-star, 3-5 funnel KPIs, an A/B plan for risky hypotheses (accounting for the real traffic volume from the Evidence Pack). Tone rules + a metric tree.' },
 ]
 
 phase('Dimensions')
@@ -177,24 +177,24 @@ var dimResults = (await parallel(DIMENSIONS.map(function (d) {
   return function () {
     return agent(
       skillBlock(d.skills) +
-      'Ты — эксперт по направлению "' + d.title + '". Рабочий бриф:\n\n' + sharpened + '\n\n' +
-      'ПАКЕТ ПРОВЕРЯЕМЫХ ФАКТОВ (Evidence Pack):\n' + evidence + '\n\n' +
-      'ЗАДАЧА (через методологию загруженного навыка): ' + d.lens + '\n\n' +
-      'Конкретно и применимо к объекту. Опирайся на факты Evidence Pack с источником. Любую цифру вне пакета помечай как assumption.',
+      'You are an expert on "' + d.title + '". Working brief:\n\n' + sharpened + '\n\n' +
+      'VERIFIABLE FACT PACK (Evidence Pack):\n' + evidence + '\n\n' +
+      'TASK (through the loaded skill\'s methodology): ' + d.lens + '\n\n' +
+      'Concrete and applicable to the subject. Rely on Evidence Pack facts with their source. Mark any number outside the pack as an assumption.',
       { label: 'dim:' + d.key, phase: 'Dimensions', schema: DIMENSION_SCHEMA }
     ).then(function (r) { if (!r) return null; r._title = d.title; return r })
   }
 }))).filter(Boolean)
 
 var dimDigest = dimResults.map(function (r) {
-  return '### ' + r._title + '\n_Навыки: ' + (r.skillsUsed || []).join(', ') + ' · Теория: ' + (r.theoryBasis || '—') + '_\n**Инсайты:**\n' + bullets(r.keyInsights) + '\n**Рекомендации:**\n' + bullets(r.recommendations) + '\n**Допущения:**\n' + bullets(r.assumptions) + '\n**Риски:**\n' + bullets(r.risks)
+  return '### ' + r._title + '\n_Skills: ' + (r.skillsUsed || []).join(', ') + ' · Theory: ' + (r.theoryBasis || '—') + '_\n**Insights:**\n' + bullets(r.keyInsights) + '\n**Recommendations:**\n' + bullets(r.recommendations) + '\n**Assumptions:**\n' + bullets(r.assumptions) + '\n**Risks:**\n' + bullets(r.risks)
 }).join('\n\n')
 
 // ===================== Phase 4: Red-team =====================
 phase('Red-team')
 var redteam = await agent(
   skillBlock(['marketing-psychology']) +
-  'Ты — скептик-контрариан в совете директоров. Перед тобой анализ по ' + dimResults.length + ' сторонам и пакет фактов. НЕ соглашайся: построй сильнейший контр-кейс (что если основная ставка ошибочна?), назови самые рискованные допущения, принятые на веру, и дешёвый тест, который бы их опроверг. Применяй ментальные модели из навыка (inversion, second-order thinking). Конкретно и неудобно.\n\nФАКТЫ:\n' + evidence + '\n\nАНАЛИЗ:\n' + dimDigest,
+  'You are a skeptical contrarian on the board. In front of you is analysis across ' + dimResults.length + ' dimensions and a fact pack. Do NOT agree: build the strongest counter-case (what if the main bet is wrong?), name the riskiest assumptions taken on faith, and a cheap test that would refute them. Apply mental models from the skill (inversion, second-order thinking). Concrete and uncomfortable.\n\nFACTS:\n' + evidence + '\n\nANALYSIS:\n' + dimDigest,
   { label: 'redteam:challenge', phase: 'Red-team', schema: REDTEAM_SCHEMA }
 )
 
@@ -202,64 +202,64 @@ var redteam = await agent(
 phase('Synthesize')
 var strategy = await agent(
   skillBlock(['marketing-plan', 'marketing-psychology']) +
-  'Ты — CMO. Заострённый бриф:\n\n' + sharpened + '\n\nФакты:\n' + evidence + '\n\nАнализ по ' + dimResults.length + ' сторонам:\n\n' + dimDigest + '\n\n' +
-  'RED-TEAM (обязательно ответить):\nКонтр-кейс: ' + redteam.strongestCounterCase + '\nРискованные допущения: ' + (redteam.riskiestAssumptions || []).join('; ') + '\n\n' +
-  'Собери ЦЕЛОСТНУЮ стратегию в Markdown (RU), применяя методологию навыка marketing-plan. Разделы: 1) Большая ставка; 2) Ответ на возражения red-team (явный раздел); 3) Позиционирование (утверждение + против чего); 4) Фокус-сегмент(ы) и их работа; 5) Ценностное предложение и оффер; 6) Messaging pillars (3-5); 7) Каналы (2-3 с механикой); 8) Контент и SEO/GEO-ставки; 9) Growth-петля; 10) Метрики (north-star + KPI-дерево); 11) 90-дневная карта по спринтам. РАЗРЕШАЙ конфликты явно. Каждую важную цифру — с источником из Evidence Pack либо помечай "гипотеза — проверить через ...". Без воды.',
+  'You are a CMO. Sharpened brief:\n\n' + sharpened + '\n\nFacts:\n' + evidence + '\n\nAnalysis across ' + dimResults.length + ' dimensions:\n\n' + dimDigest + '\n\n' +
+  'RED-TEAM (must answer):\nCounter-case: ' + redteam.strongestCounterCase + '\nRiskiest assumptions: ' + (redteam.riskiestAssumptions || []).join('; ') + '\n\n' +
+  'Assemble a COHERENT strategy in Markdown (English), applying the marketing-plan skill methodology. Sections: 1) Big bet; 2) Response to the red-team objections (explicit section); 3) Positioning (statement + what we compete against); 4) Focus segment(s) and their job; 5) Value proposition and offer; 6) Messaging pillars (3-5); 7) Channels (2-3 with mechanics); 8) Content and SEO/GEO bets; 9) Growth loop; 10) Metrics (north-star + KPI tree); 11) 90-day roadmap by sprints. RESOLVE conflicts explicitly. Every important number — with a source from the Evidence Pack, or label it "hypothesis — verify via ...". No fluff.',
   { label: 'synthesize:strategy', phase: 'Synthesize' }
 )
 
-// ===================== Phase 6: Tasks (RICE через product-manager-toolkit) =====================
+// ===================== Phase 6: Tasks (RICE via product-manager-toolkit) =====================
 phase('Tasks')
 var taskData = await agent(
   skillBlock(['product-manager-toolkit']) +
-  'Ты — маркетинговый операционный лид. Стратегия:\n\n' + strategy + '\n\n' +
-  'Применяя методологию RICE из навыка product-manager-toolkit, разложи стратегию в КОНКРЕТНЫЕ исполнимые задачи (12-20). Каждая: title (глагол+результат); dimension; description (что и зачем, 1-2 фразы); firstStep (первый шаг сегодня); RICE: reach (1-10), impact (0.25/0.5/1/2/3), confidence (0.5/0.8/1.0), effort (человеко-дни, >=0.5). КАЖДАЯ задача атомарна (одно действие — один результат; deliverable из 3+ частей = разбей). Реалистично для указанных ресурсов.',
+  'You are a marketing operations lead. Strategy:\n\n' + strategy + '\n\n' +
+  'Applying the RICE methodology from the product-manager-toolkit skill, break the strategy into CONCRETE actionable tasks (12-20). Each: title (verb+result); dimension; description (what and why, 1-2 sentences); firstStep (first step today); RICE: reach (1-10), impact (0.25/0.5/1/2/3), confidence (0.5/0.8/1.0), effort (person-days, >=0.5). EACH task is atomic (one action — one result; a deliverable with 3+ parts = split). Realistic for the stated resources.',
   { label: 'tasks:decompose', phase: 'Tasks', schema: TASKS_SCHEMA }
 )
 
-// ===================== Phase 7: Verify (параллельно) =====================
+// ===================== Phase 7: Verify (in parallel) =====================
 phase('Verify')
 var verifyOut = await parallel([
   function () {
     return agent(
-      'Ты — fact-checker. Проверь КАЖДОЕ количественное и фактическое утверждение стратегии против Evidence Pack. Найди НЕподкреплённые источником и не помеченные как гипотеза (overclaim, выдуманные цифры, "единственный на рынке" без проверки). Для каждого дай fix.\n\nEVIDENCE PACK:\n' + evidence + '\n\nСТРАТЕГИЯ:\n' + strategy,
+      'You are a fact-checker. Check EVERY quantitative and factual claim in the strategy against the Evidence Pack. Find the ones not backed by a source and not labeled as a hypothesis (overclaim, fabricated numbers, "only one on the market" unverified). For each, give a fix.\n\nEVIDENCE PACK:\n' + evidence + '\n\nSTRATEGY:\n' + strategy,
       { label: 'verify:claims', phase: 'Verify', schema: CLAIMS_SCHEMA }
     )
   },
   function () {
     return agent(
-      'Ты — operations reviewer. Проверь задачи на: 1) атомарность (deliverable из 3+ частей = разбить); 2) реалистичность effort; 3) вменяемость RICE. ВЕРНИ ИСПРАВЛЕННЫЙ массив задач и краткий changesNote.\n\nЗАДАЧИ (JSON):\n' + JSON.stringify((taskData && taskData.tasks) || []),
+      'You are an operations reviewer. Check the tasks for: 1) atomicity (a deliverable with 3+ parts = split); 2) realistic effort; 3) sane RICE. RETURN the CORRECTED task array and a short changesNote.\n\nTASKS (JSON):\n' + JSON.stringify((taskData && taskData.tasks) || []),
       { label: 'verify:tasks', phase: 'Verify', schema: TASKVERIFY_SCHEMA }
     )
   },
 ])
 var claims = verifyOut[0] || { unsupported: [], verdict: '—' }
-var taskFix = verifyOut[1] || { tasks: (taskData && taskData.tasks) || [], changesNote: 'без изменений' }
+var taskFix = verifyOut[1] || { tasks: (taskData && taskData.tasks) || [], changesNote: 'no changes' }
 
 // ===================== Phase 8: Finalize =====================
 phase('Finalize')
 var finalStrategy = await agent(
-  'Учти результаты верификации и ВЫДАЙ финальную исправленную стратегию в Markdown (RU). Сохрани структуру, устрани overclaim/выдуманные цифры (замени на "гипотеза — проверить через ..."), закрой слабые места. Без преамбул — только итоговый документ.\n\nИСХОДНАЯ СТРАТЕГИЯ:\n' + strategy + '\n\nНЕПОДКРЕПЛЁННЫЕ УТВЕРЖДЕНИЯ (исправить):\n' + ((claims.unsupported || []).map(function (u) { return '- ' + u.claim + ' → ' + u.fix }).join('\n') || '—'),
+  'Incorporate the verification results and OUTPUT the final corrected strategy in Markdown (English). Keep the structure, remove overclaim/fabricated numbers (replace with "hypothesis — verify via ..."), close weak spots. No preamble — only the final document.\n\nORIGINAL STRATEGY:\n' + strategy + '\n\nUNSUPPORTED CLAIMS (to fix):\n' + ((claims.unsupported || []).map(function (u) { return '- ' + u.claim + ' → ' + u.fix }).join('\n') || '—'),
   { label: 'finalize:strategy', phase: 'Finalize' }
 )
-// ===================== Phase 8.5: Edit (редактура в связный нарратив) =====================
+// ===================== Phase 8.5: Edit (editing into a coherent narrative) =====================
 phase('Edit')
 var editedStrategy = await agent(
   skillBlock(['copy-editing', 'copywriting']) +
-  'Ты — главный редактор. Перепиши стратегию в СВЯЗНЫЙ, ЛОГИЧНЫЙ, ЧИТАЕМЫЙ нарратив для умного делового читателя (CEO/инвестор). Сейчас текст плотный, жаргонный и местами «склеен из несвязанных слов» — исправь это, СОХРАНИВ всё содержание.\n' +
-  'ПРАВИЛА РЕДАКТУРЫ:\n' +
-  '- Связность и логика: один абзац — одна мысль; явные переходы; причинно-следственный поток; каждый раздел вытекает из предыдущего.\n' +
-  '- Простой человеческий язык: убери внутренний жаргон и шорткаты (§Удар3, RAT, «second-order», «sunk-cost-петля», «Map≠Territory» и т.п.) — расшифруй простыми словами или убери; аббревиатуры раскрой при первом упоминании.\n' +
-  '- Источники СОХРАНИ (это ценность), но подавай чисто: НЕ «[Источник 2, high]» через каждое слово — своди к аккуратной форме («подтверждено в коде», сноска), без замусоривания.\n' +
-  '- Сохрани ВСЕ существенные факты, цифры, выводы, структуру разделов и 90-дневный план. Режь форму (повторы, рыхлость, графоманию), НЕ содержание.\n' +
-  '- Деловой уверенный тон, активный залог. Без восклицаний, бузвордов и канцелярита.\n' +
-  '- Чистый Markdown с понятными заголовками. Без преамбул — только итоговый документ.\n\n' +
-  'ИСХОДНАЯ СТРАТЕГИЯ:\n' + finalStrategy,
+  'You are an editor-in-chief. Rewrite the strategy into a COHERENT, LOGICAL, READABLE narrative for a smart business reader (CEO/investor). Right now the text is dense, jargon-heavy, and in places "glued from disconnected words" — fix that while PRESERVING all content.\n' +
+  'EDITING RULES:\n' +
+  '- Coherence and logic: one paragraph — one idea; explicit transitions; cause-and-effect flow; each section follows from the previous.\n' +
+  '- Plain human language: remove internal jargon and shortcuts ("§Strike3", "RAT", "second-order", "sunk-cost loop", "Map≠Territory", etc.) — explain in plain words or remove; expand abbreviations on first use.\n' +
+  '- KEEP sources (that is the value), but present them cleanly: NOT "[Source 2, high]" after every word — reduce to a tidy form ("confirmed in code", a footnote), without clutter.\n' +
+  '- Keep ALL substantive facts, numbers, conclusions, the section structure, and the 90-day plan. Cut form (repetition, looseness, graphomania), NOT content.\n' +
+  '- Businesslike, confident tone, active voice. No exclamations, buzzwords, or bureaucratese.\n' +
+  '- Clean Markdown with clear headings. No preamble — only the final document.\n\n' +
+  'ORIGINAL STRATEGY:\n' + finalStrategy,
   { label: 'edit:strategy', phase: 'Edit' }
 )
 var onePager = await agent(
   skillBlock(['copywriting']) +
-  'Сожми отредактированную стратегию в EXECUTIVE-ОДНОПЕЙДЖЕР (Markdown, RU, <=1 страница), связным человеческим языком: Большая ставка (2-3 фразы); Позиционирование (1 утверждение); Фокус-сегмент; Топ-3 ставки; 3 главные метрики; что делать в первые 2 недели. Только суть, читаемо.\n\nСТРАТЕГИЯ:\n' + editedStrategy,
+  'Compress the edited strategy into an EXECUTIVE ONE-PAGER (Markdown, English, <=1 page), in coherent human language: Big bet (2-3 sentences); Positioning (1 statement); Focus segment; Top-3 bets; 3 key metrics; what to do in the first 2 weeks. Just the essence, readable.\n\nSTRATEGY:\n' + editedStrategy,
   { label: 'edit:onepager', phase: 'Edit' }
 )
 
@@ -268,39 +268,39 @@ var tasksMarkdown = renderTasksMarkdown(scoredTasks)
 var skillsLog = {}
 dimResults.forEach(function (r) { (r.skillsUsed || []).forEach(function (s) { skillsLog[s] = true }) })
 
-// ===================== Phase 9: Render (дашборд-отчёт с графиками) =====================
+// ===================== Phase 9: Render (dashboard report with charts) =====================
 phase('Render')
 var reportHtml = await agent(
   skillBlock(['frontend-design']) +
-  'Ты — продуктовый фронтенд-дизайнер. Собери ОДИН самодостаточный HTML — МАРКЕТИНГОВЫЙ ОТЧЁТ в виде ДАШБОРДА (не лонгрид!), который «схватываешь глазами за 30 секунд». Эстетика навыка frontend-design (выразительно, не generic-AI), адаптивно, встроенный <style>, Google Fonts можно.\n' +
-  'СТРУКТУРА (dashboard-first):\n' +
-  '1) Executive-дашборд сверху: north-star крупной карточкой + 3-4 KPI-карточки (из метрик однопейджера/стратегии). Нет точного числа — подпиши «цель» или «гипотеза», не выдумывай.\n' +
-  '2) ГРАФИКИ через Chart.js (CDN https://cdn.jsdelivr.net/npm/chart.js):\n' +
-  '   • RICE-приоритизация — строй СТРОГО по реальным данным задач (bubble: x=effort, y=impact, размер=reach, подпись=title; либо горизонтальный bar по rice). Топ-задачи выделить.\n' +
-  '   • 90-дневный роадмап — спринты горизонтальными полосами (извлеки из раздела дорожной карты; нет дат — по неделям/спринтам).\n' +
-  '   • Каналы — donut/bar распределения усилий по приоритетным каналам из стратегии.\n' +
-  '   • Воронка (если в стратегии есть этапы awareness→consideration→conversion).\n' +
-  '   Числа вне данных НЕ выдавай за факт — помечай «оценка». RICE-чарт — только реальные числа задач.\n' +
-  '3) Топ-задачи — компактная RICE-таблица/карточки (топ по rice).\n' +
-  '4) Стратегия-нарратив — в СВОРАЧИВАЕМЫХ <details> по разделам (вторично, не в центре). Markdown → семантический HTML сам.\n' +
-  '5) Red-team и Fact-check — компактные карточки (контр-кейс кратко, вердикт, число правок).\n' +
-  '6) Бейджи навыков + методология ТОЛЬКО мелким текстом внизу (НЕ отдельной крупной секцией с заголовком) + footer.\n' +
-  'ТЕХ-ТРЕБОВАНИЯ: у каждого <canvas> УНИКАЛЬНЫЙ id, который НЕ совпадает с id секций/якорей (иначе getElementById вернёт секцию, и график не построится — частый баг). Каждый new Chart оборачивай в try/catch. Chart.js — для графиков, минимум навигации. Выведи ТОЛЬКО HTML, без markdown-обёртки и текста до/после.\n\n' +
-  'ДАННЫЕ ДЛЯ ОТЧЁТА:\n' +
-  'ОБЪЕКТ: ' + (brief.subject || 'Маркетинговая стратегия') + '\n' +
-  'ЗАДЕЙСТВОВАННЫЕ НАВЫКИ: ' + (Object.keys(skillsLog).join(', ') || '—') + '\n\n' +
-  '=== ОДНОПЕЙДЖЕР (markdown) ===\n' + onePager + '\n\n' +
-  '=== СТРАТЕГИЯ-НАРРАТИВ (markdown) ===\n' + editedStrategy + '\n\n' +
-  '=== ЗАДАЧИ (JSON, с полем rice, отсортированы) ===\n' + JSON.stringify(scoredTasks) + '\n\n' +
-  '=== RED-TEAM ===\nКонтр-кейс: ' + (redteam.strongestCounterCase || '—') + '\nРискованные допущения: ' + (redteam.riskiestAssumptions || []).join('; ') + '\n\n' +
-  '=== FACT-CHECK ===\nВердикт: ' + (claims.verdict || '—') + '\nЧисло правок: ' + ((claims.unsupported || []).length),
+  'You are a product frontend designer. Build ONE self-contained HTML — a MARKETING REPORT as a DASHBOARD (not a long-read!) that you "grasp at a glance in 30 seconds". Use the frontend-design skill aesthetic (expressive, not generic-AI), responsive, inline <style>, Google Fonts allowed.\n' +
+  'STRUCTURE (dashboard-first):\n' +
+  '1) Executive dashboard at the top: north-star as a large card + 3-4 KPI cards (from the one-pager/strategy metrics). If there is no exact number — label it "target" or "hypothesis", do not invent.\n' +
+  '2) CHARTS via Chart.js (CDN https://cdn.jsdelivr.net/npm/chart.js):\n' +
+  '   • RICE prioritization — build STRICTLY from the real task data (bubble: x=effort, y=impact, size=reach, label=title; or a horizontal bar by rice). Highlight the top tasks.\n' +
+  '   • 90-day roadmap — sprints as horizontal bars (extract from the roadmap section; no dates — by weeks/sprints).\n' +
+  '   • Channels — donut/bar of effort allocation across the priority channels from the strategy.\n' +
+  '   • Funnel (if the strategy has awareness→consideration→conversion stages).\n' +
+  '   Do NOT present numbers outside the data as fact — label them "estimate". The RICE chart — only real task numbers.\n' +
+  '3) Top tasks — a compact RICE table/cards (top by rice).\n' +
+  '4) Strategy narrative — in COLLAPSIBLE <details> by section (secondary, not central). Markdown → semantic HTML yourself.\n' +
+  '5) Red-team and Fact-check — compact cards (counter-case briefly, verdict, number of fixes).\n' +
+  '6) Skill badges + methodology ONLY as small text at the bottom (NOT a separate large titled section) + footer.\n' +
+  'TECH REQUIREMENTS: each <canvas> must have a UNIQUE id that does NOT collide with any section/anchor id (otherwise getElementById returns the section and the chart won\'t build — a common bug). Wrap each new Chart in try/catch. Chart.js — for charts, minimal navigation. Output ONLY the HTML, no markdown wrapper and no text before/after.\n\n' +
+  'REPORT DATA:\n' +
+  'SUBJECT: ' + (brief.subject || 'Marketing strategy') + '\n' +
+  'SKILLS USED: ' + (Object.keys(skillsLog).join(', ') || '—') + '\n\n' +
+  '=== ONE-PAGER (markdown) ===\n' + onePager + '\n\n' +
+  '=== STRATEGY NARRATIVE (markdown) ===\n' + editedStrategy + '\n\n' +
+  '=== TASKS (JSON, with a rice field, sorted) ===\n' + JSON.stringify(scoredTasks) + '\n\n' +
+  '=== RED-TEAM ===\nCounter-case: ' + (redteam.strongestCounterCase || '—') + '\nRiskiest assumptions: ' + (redteam.riskiestAssumptions || []).join('; ') + '\n\n' +
+  '=== FACT-CHECK ===\nVerdict: ' + (claims.verdict || '—') + '\nNumber of fixes: ' + ((claims.unsupported || []).length),
   { label: 'render:dashboard', phase: 'Render' }
 )
 if (typeof reportHtml === 'string') {
   reportHtml = reportHtml.replace(/^\s*```(?:html)?\s*/i, '').replace(/\s*```\s*$/, '').trim()
 }
 
-log('Готово: фактов ' + groundPacks.reduce(function (n, p) { return n + (p.facts || []).length }, 0) + ', сторон ' + dimResults.length + ', задач ' + scoredTasks.length + ', навыков ' + Object.keys(skillsLog).length + ', правок fact-check ' + ((claims.unsupported || []).length) + ', HTML ' + (reportHtml ? reportHtml.length + ' симв.' : 'нет') + '.')
+log('Done: ' + groundPacks.reduce(function (n, p) { return n + (p.facts || []).length }, 0) + ' facts, ' + dimResults.length + ' dimensions, ' + scoredTasks.length + ' tasks, ' + Object.keys(skillsLog).length + ' skills, ' + ((claims.unsupported || []).length) + ' fact-check fixes, HTML ' + (reportHtml ? reportHtml.length + ' chars' : 'none') + '.')
 
 return {
   onePager: onePager,

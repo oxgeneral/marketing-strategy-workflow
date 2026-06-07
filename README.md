@@ -2,126 +2,126 @@
 
 # 🧭 marketing-strategy
 
-### Маркетинговая стратегия и бэклог задач — из одного вопроса. На реальных навыках, а не на «угадайке» LLM.
+### A marketing strategy and task backlog — from a single question. On real skills, not LLM guesswork.
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-green.svg)](LICENSE)
 [![Claude Code](https://img.shields.io/badge/Claude%20Code-workflow-orange)](https://claude.com/claude-code)
-[![Skills](https://img.shields.io/badge/навыков-20%2B-blue)](#-стороны-маркетинга-и-навыки)
+[![Skills](https://img.shields.io/badge/skills-20%2B-blue)](#-marketing-dimensions-and-skills)
 [![Stars](https://img.shields.io/github/stars/oxgeneral/marketing-strategy-workflow?style=social)](https://github.com/oxgeneral/marketing-strategy-workflow)
 
 </div>
 
-> Попросите обычный чат-бот «сделай маркетинговую стратегию» — получите красивый, уверенный и наполовину выдуманный текст. Здесь иначе: **~20 агентов, каждый со своим настоящим маркетинговым навыком**, собирают факты с источниками, спорят друг с другом и проверяют каждую цифру — и только потом выдают стратегию и приоритизированные задачи.
+> Ask a regular chatbot to "make a marketing strategy" and you get a pretty, confident, half-invented text. This is different: **~20 agents, each with its own real marketing skill**, gather facts with sources, argue with each other, and check every number — and only then produce a strategy and prioritized tasks.
 
 ---
 
-## ✨ Что вы получаете
+## ✨ What you get
 
-Один запуск — пять готовых артефактов:
+One run — five ready artifacts:
 
-- 📊 **Интерактивный дашборд-отчёт** — самодостаточная HTML-страница (дизайн от навыка `frontend-design`): executive-сводка с KPI, графики (RICE-приоритизация, 90-дневный роадмап, каналы, воронка на Chart.js), сворачиваемая стратегия. Не стыдно открыть на созвоне. → [посмотреть пример](examples/sample-report.html)
-- 📄 **Executive-однопейджер** — большая ставка, позиционирование, топ-3 ставки, 3 метрики, что делать в первые 2 недели.
-- 🗺️ **Стратегия из 11 разделов** — позиционирование, фокус-сегмент, оффер и цена, messaging pillars, каналы, контент и SEO/GEO, growth-петля, дерево метрик, 90-дневная дорожная карта.
-- ✅ **12–20 задач с RICE** — атомарных, отсортированных по приоритету, с конкретным первым шагом.
-- 🔍 **Доказательная база** — Evidence Pack с источниками, отчёт red-team и лог проверки фактов. Видно, на чём стоит каждый вывод.
+- 📊 **Interactive dashboard report** — a self-contained HTML page (designed by the `frontend-design` skill): an executive summary with KPIs, charts (RICE prioritization, 90-day roadmap, channels, funnel via Chart.js), and a collapsible strategy. Presentable on a call. → [see the example](examples/sample-report.html)
+- 📄 **Executive one-pager** — big bet, positioning, top-3 bets, 3 metrics, what to do in the first two weeks.
+- 🗺️ **11-section strategy** — positioning, focus segment, offer and pricing, messaging pillars, channels, content and SEO/GEO, growth loop, metric tree, 90-day roadmap.
+- ✅ **12–20 RICE tasks** — atomic, sorted by priority, each with a concrete first step.
+- 🔍 **Evidence base** — an Evidence Pack with sources, a red-team report, and a fact-check log. You can see what each conclusion rests on.
 
-## 🎯 Почему это не «ещё один промпт»
+## 🎯 Why this isn't "just another prompt"
 
-- **Реальные навыки, а не их пересказ.** 9 сторон маркетинга работают на навыках [Corey Haines](https://github.com/coreyhaines31/marketingskills) (`ai-seo`, `pricing`, `copywriting`, `customer-research`…), `ajtbd` (Jobs To Be Done) и `marketing-psychology`. Агент **загружает сам навык** ([как именно](#-стороны-маркетинга-и-навыки)), а не мою выжимку из методологии.
-- **Сначала факты, потом мнения.** Перед анализом 3 ресёрчера собирают проверяемые факты — из репозитория/кода, с рынка и отдельным ценовым интернет-ресерчем — **каждый с источником**.
-- **Адверсариальность встроена.** Red-team оспаривает главную ставку *до* синтеза; fact-checker ловит выдуманные цифры и overclaim; task-verifier разбивает неатомарные задачи. Стратегия выходит уже после спора с собой.
-- **Методология, а не вкусовщина.** April Dunford (позиционирование), JTBD, Van Westendorp (цена), Cialdini (психология), RICE (приоритизация), Theory of Constraints.
+- **Real skills, not a paraphrase of them.** 9 marketing dimensions run on [Corey Haines'](https://github.com/coreyhaines31/marketingskills) skills (`ai-seo`, `pricing`, `copywriting`, `customer-research`…), `ajtbd` (Jobs To Be Done), and `marketing-psychology`. The agent **loads the skill itself** ([exactly how](#-marketing-dimensions-and-skills)), not a summary of its methodology.
+- **Facts first, opinions second.** Before analysis, 3 researchers gather verifiable facts — from the repo/code, the market, and dedicated pricing web research — **each with a source**.
+- **Adversarial by design.** The red-team challenges the main bet *before* synthesis; the fact-checker catches fabricated numbers and overclaims; the task-verifier splits non-atomic tasks. The strategy ships after arguing with itself.
+- **Methodology, not taste.** April Dunford (positioning), JTBD, Van Westendorp (pricing), Cialdini (psychology), RICE (prioritization), Theory of Constraints.
 
-> ⚠️ **Честно про цену:** это не кнопка «сделать красиво». Полный прогон — ~20 агентов, 15–25 минут, более 1M токенов. Зато на выходе — то, что обычно делает команда за неделю.
+> ⚠️ **Honest about cost:** this is not a "make it pretty" button. A full run is ~20 agents, 15–25 minutes, and over 1M tokens. In exchange you get what usually takes a team a week.
 
-## ⚙️ Как это работает
+## ⚙️ How it works
 
 ```
-Frame      → распарсить бриф (даже одну фразу), заострить, зафиксировать допущения
-Ground     → 3 ресёрчера: репо/код ‖ рынок/веб ‖ ценовой интернет-ресерч  → Evidence Pack с источниками
-Dimensions → ~9 сторон маркетинга параллельно, каждая на своём РЕАЛЬНОМ навыке
-Red-team   → оспорить складывающийся консенсус (inversion, second-order thinking)
-Synthesize → целостная стратегия, отвечающая на возражения red-team
-Tasks      → разложить в задачи с полями RICE (навык product-manager-toolkit)
-Verify     → fact-check утверждений ‖ проверка атомарности задач (параллельно)
-Finalize   → финальная стратегия (учёт fact-check)
-Edit       → copy-editing → связный читаемый нарратив (без жаргона) + однопейджер
-Render     → frontend-design → дашборд-отчёт с графиками (Chart.js); RICE считается в коде
+Frame      → parse the brief (even one sentence), sharpen it, record assumptions
+Ground     → 3 researchers: repo/code ‖ market/web ‖ pricing web research  → Evidence Pack with sources
+Dimensions → ~9 marketing dimensions in parallel, each on its own REAL skill
+Red-team   → challenge the forming consensus (inversion, second-order thinking)
+Synthesize → a coherent strategy that answers the red-team's objections
+Tasks      → break down into tasks with RICE fields (product-manager-toolkit skill)
+Verify     → fact-check claims ‖ check task atomicity (in parallel)
+Finalize   → final strategy (incorporating fact-check)
+Edit       → copy-editing → coherent readable narrative (no jargon) + one-pager
+Render     → frontend-design → dashboard report with charts (Chart.js); RICE computed in code
 ```
 
-Каждый навык загружается по устойчивой схеме: **Skill → чтение `SKILL.md` с диска → встроенная методология**. Поэтому workflow использует ваши навыки по максимуму, но **не падает**, если их нет.
+Each skill loads via a resilient scheme: **Skill → read `SKILL.md` from disk → built-in methodology**. So the workflow uses your skills to the fullest, but **does not break** if they're absent.
 
-## 🚀 Установка за одну команду
+## 🚀 Install in one command
 
 ```bash
 git clone https://github.com/oxgeneral/marketing-strategy-workflow.git
 cd marketing-strategy-workflow
-./install.sh --target /путь/к/вашему/проекту
+./install.sh --target /path/to/your/project
 ```
 
-`install.sh` ставит навыки через `claude` CLI **и** копирует workflow в ваш проект. Идемпотентен и не падает, если `claude` нет или навык уже установлен.
+`install.sh` installs the skills via the `claude` CLI **and** copies the workflow into your project. It is idempotent and does not fail if `claude` is missing or a skill is already installed.
 
-| Опция | Что делает |
+| Option | What it does |
 |---|---|
-| `--target DIR` | Куда копировать `.claude/` (по умолчанию — текущая папка) |
-| `--skills-only` | Только установить навыки |
-| `--no-skills` | Только скопировать файлы |
-| `-h`, `--help` | Справка |
+| `--target DIR` | Where to copy `.claude/` (default: current folder) |
+| `--skills-only` | Only install skills |
+| `--no-skills` | Only copy files |
+| `-h`, `--help` | Help |
 
-## 💬 Использование
+## 💬 Usage
 
-**Одной фразой** — самый быстрый путь:
+**From a single sentence** — the fastest path:
 
 ```
-/marketing продвигаю Telegram-бот для записи к репетиторам, цель — первые 100 платящих
+/marketing promoting a Telegram bot for booking tutors, goal — the first 100 paying users
 ```
 
-Без аргумента `/marketing` задаст ровно один вопрос. Аудиторию, позиционирование и каналы workflow выведет сам и подтвердит фактами.
+Without an argument, `/marketing` asks exactly one question. The workflow derives audience, positioning, and channels itself and confirms them with facts.
 
-**Программно** — через инструмент Workflow:
+**Programmatically** — via the Workflow tool:
 
 ```js
-Workflow({ name: 'marketing-strategy', args: 'одна фраза-бриф' })
-// или структурно:
+Workflow({ name: 'marketing-strategy', args: 'one-sentence brief' })
+// or structured:
 Workflow({ name: 'marketing-strategy', args: { subject, goals, audience, positioning, constraints, context, docs: [], urls: [] } })
 ```
 
-## 🧩 Стороны маркетинга и навыки
+## 🧩 Marketing dimensions and skills
 
-| Сторона | Навык(и) |
+| Dimension | Skill(s) |
 |---|---|
-| Позиционирование и JTBD | `ajtbd` + `competitors` |
-| Аудитория и сегментация | `ajtbd` + `customer-research` |
-| Оффер и ценность/цена | `pricing` + ценовой интернет-ресерч |
-| Сообщения и копирайтинг | `marketing-psychology` + `copywriting` + `design:ux-copy` |
-| SEO и GEO (AI-поиск) | `ai-seo` + `seo-audit` + `schema` |
-| Контент-стратегия | `content-strategy` |
-| Каналы и дистрибуция | `marketing-plan` + `community-marketing` |
-| Growth-петли и удержание | `referrals` + `free-tools` + `lead-magnets` |
-| Brand voice и измерение | `analytics` + `ab-testing` |
-| Декомпозиция задач (RICE) | `product-manager-toolkit` |
+| Positioning & JTBD | `ajtbd` + `competitors` |
+| Audience & segmentation | `ajtbd` + `customer-research` |
+| Offer & value/price | `pricing` + pricing web research |
+| Messaging & copywriting | `marketing-psychology` + `copywriting` + `design:ux-copy` |
+| SEO & GEO (AI search) | `ai-seo` + `seo-audit` + `schema` |
+| Content strategy | `content-strategy` |
+| Channels & distribution | `marketing-plan` + `community-marketing` |
+| Growth loops & retention | `referrals` + `free-tools` + `lead-magnets` |
+| Brand voice & measurement | `analytics` + `ab-testing` |
+| Task breakdown (RICE) | `product-manager-toolkit` |
 
-## 📦 Что возвращает
+## 📦 What it returns
 
-Объект с полями: **`reportHtml`** (готовый красивый HTML-отчёт), `onePager`, `strategyMarkdown`, `tasks` (с RICE, отсортированы), `tasksMarkdown`, `evidence` (факты с источниками), `redteam`, `claimsCheck`, `skillsUsed` (что и каким способом реально загружено), `dimensions`. Вызывающий сохраняет это в файлы (`.html` + `.md`).
+An object with fields: **`reportHtml`** (the ready dashboard report), `onePager`, `strategyMarkdown`, `tasks` (with RICE, sorted), `tasksMarkdown`, `evidence` (facts with sources), `redteam`, `claimsCheck`, `skillsUsed` (what was actually loaded and how), `dimensions`. The caller saves it to files (`.html` + `.md`).
 
-## 🔌 Откуда берутся навыки (ручная установка)
+## 🔌 Where the skills come from (manual install)
 
-| Навыки | Источник | Команды |
+| Skills | Source | Commands |
 |---|---|---|
-| `ai-seo`, `seo-audit`, `schema`, `pricing`, `copywriting`, `customer-research`, `content-strategy`, `marketing-plan`, `community-marketing`, `co-marketing`, `referrals`, `free-tools`, `lead-magnets`, `analytics`, `ab-testing`, `competitors`, `marketing-psychology` | **coreyhaines31/marketingskills** (43 навыка, MIT) | `claude plugin marketplace add coreyhaines31/marketingskills`<br>`claude plugin install marketing-skills@marketingskills` |
+| `ai-seo`, `seo-audit`, `schema`, `pricing`, `copywriting`, `customer-research`, `content-strategy`, `marketing-plan`, `community-marketing`, `co-marketing`, `referrals`, `free-tools`, `lead-magnets`, `analytics`, `ab-testing`, `competitors`, `marketing-psychology` | **coreyhaines31/marketingskills** (43 skills, MIT) | `claude plugin marketplace add coreyhaines31/marketingskills`<br>`claude plugin install marketing-skills@marketingskills` |
 | `ajtbd` | **oxgeneral/ajtbd-claude-skill** | `claude plugin marketplace add oxgeneral/ajtbd-claude-skill`<br>`claude plugin install ajtbd@ajtbd-claude-skill` |
 | `design:ux-copy`, `user-research`, `research-synthesis` | **anthropics/knowledge-work-plugins** | `claude plugin marketplace add anthropics/knowledge-work-plugins`<br>`claude plugin install design@knowledge-work-plugins` |
-| `product-manager-toolkit` (RICE) | нет публичного маркетплейса | — (RICE считается по встроенной методологии) |
+| `product-manager-toolkit` (RICE) | no public marketplace | — (RICE is computed via built-in methodology) |
 
-> Одна установка `coreyhaines31/marketingskills` закрывает ~90% навыков (включая `marketing-psychology`). Свежие навыки регистрируются после перезапуска сессии; до этого workflow читает их `SKILL.md` с диска.
+> A single install of `coreyhaines31/marketingskills` covers ~90% of the skills (including `marketing-psychology`). Freshly installed skills register after a session restart; until then the workflow reads their `SKILL.md` from disk.
 
-## 📄 Лицензия
+## 📄 License
 
-MIT © [Aleksandr Fefelov](https://github.com/oxgeneral). Навыки `marketing-skills` — © Corey Haines (MIT), устанавливаются отдельно.
+MIT © [Aleksandr Fefelov](https://github.com/oxgeneral). The `marketing-skills` skills are © Corey Haines (MIT) and are installed separately.
 
 ---
 
 <div align="center">
-<sub>Собрано как мульти-агентный workflow для <a href="https://claude.com/claude-code">Claude Code</a>. Стратегия, которой не стыдно показать инвестору — потому что под каждым выводом есть источник.</sub>
+<sub>Built as a multi-agent workflow for <a href="https://claude.com/claude-code">Claude Code</a>. A strategy you can show an investor — because every conclusion has a source behind it.</sub>
 </div>
